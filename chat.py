@@ -83,4 +83,4 @@ else:
     if user_message:
         encrypted_message = encrypt_message(user_message)
         db.collection("messages").add({"username": st.session_state["username"], "message": encrypted_message})
-        st.experimental_rerun()
+        st.rerun()
