@@ -1,2 +1,4 @@
 firebase_admin
 streamlit
+cryptography
+base64
