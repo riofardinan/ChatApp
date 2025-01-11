@@ -56,7 +56,7 @@ if "username" not in st.session_state:
     username = st.text_input("Enter your name to start chat:", key="username_input")
     if username:
         st.session_state["username"] = username
-        st.experimental_rerun()
+        st.rerun()
 else:
     st.title("Chat Room")
     st.success(f"Welcome, {st.session_state['username']}!")
