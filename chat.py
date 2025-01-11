@@ -51,32 +51,36 @@ def decrypt_message(encrypted_message):
     )
     return decrypted.decode()
 
-# Streamlit UI
-st.title("Chatting App with RSA Encryption")
+# Pop-up for username
+if "username" not in st.session_state:
+    username = st.text_input("Enter your name to start chat:", key="username_input")
+    if username:
+        st.session_state["username"] = username
+        st.experimental_rerun()
+else:
+    st.title("Chat Room")
+    st.success(f"Welcome, {st.session_state['username']}!")
 
-# User harus memasukkan nama terlebih dahulu
-username = st.text_input("Enter your name to start chatting:")
+    # Chat interface
+    st.header("Chat Messages")
+    chat_messages = st.container()
 
-if username:
-    st.success(f"Welcome, {username}! You can now send messages.")
-
-    # Input pesan
-    message = st.text_input("Enter your message:")
-
-    if st.button("Send"):
-        if message:
-            encrypted_message = encrypt_message(message)  # Enkripsi pesan
-            db.collection("messages").add({"username": username, "message": encrypted_message})
-            st.success("Message sent!")
-        else:
-            st.warning("Message cannot be empty!")
-
-    # Menampilkan pesan
-    st.header("Chat Messages:")
+    # Fetch messages from database
     messages = db.collection("messages").stream()
-    for msg in messages:
-        msg_data = msg.to_dict()
-        sender = msg_data["username"]
-        encrypted_message = msg_data["message"]
-        decrypted_message = decrypt_message(encrypted_message)
-        st.write(f"**{sender}:** {decrypted_message}")
+    with chat_messages:
+        for msg in messages:
+            msg_data = msg.to_dict()
+            sender = msg_data["username"]
+            encrypted_message = msg_data["message"]
+            decrypted_message = decrypt_message(encrypted_message)
+            if sender == st.session_state["username"]:
+                st.chat_message("user").markdown(f"**{sender}:** {decrypted_message}")
+            else:
+                st.chat_message("assistant").markdown(f"**{sender}:** {decrypted_message}")
+
+    # Input chat message
+    user_message = st.chat_input("Type your message...")
+    if user_message:
+        encrypted_message = encrypt_message(user_message)
+        db.collection("messages").add({"username": st.session_state["username"], "message": encrypted_message})
+        st.experimental_rerun()
