@@ -6,13 +6,14 @@ from firebase_admin import credentials, firestore
 import base64
 
 # Inisialisasi Firebase
-firebase_config = st.secrets["firebase"]  # Simpan konfigurasi Firebase di Streamlit Secrets
-cred = credentials.Certificate(dict(firebase_config))
-firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    firebase_config = st.secrets["firebase"]
+    cred = credentials.Certificate(dict(firebase_config))
+    firebase_admin.initialize_app(cred)
+
 db = firestore.client()
 
 # Kunci RSA (Public dan Private Key)
-# Pastikan kunci ini disimpan dengan aman
 PRIVATE_KEY = st.secrets["rsa_keys"]["private_key"]
 PUBLIC_KEY = st.secrets["rsa_keys"]["public_key"]
 
