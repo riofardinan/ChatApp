@@ -53,34 +53,36 @@ def decrypt_message(encrypted_message):
 
 # Pop-up for username
 if "username" not in st.session_state:
-    username = st.text_input("Enter your name to start chat:", key="username_input")
-    if username:
-        st.session_state["username"] = username
-        st.rerun()
+    with st.modal("Enter your name 📝", closable=False):
+        username = st.text_input("What's your name?")
+        if username:
+            st.session_state["username"] = username
+            st.success(f"Hello, {username}! 🚀 Let's chat!")
+            st.rerun()
 else:
-    st.title("Chat Room")
-    st.success(f"Welcome, {st.session_state['username']}!")
+    # Chat Room UI
+    st.title("🌟 Chat Room")
 
-    # Chat interface
-    st.header("Chat Messages")
     chat_messages = st.container()
 
     # Fetch messages from database
     messages = db.collection("messages").stream()
     with chat_messages:
+        st.write("💬 **Chat Messages:**")
         for msg in messages:
             msg_data = msg.to_dict()
             sender = msg_data["username"]
             encrypted_message = msg_data["message"]
             decrypted_message = decrypt_message(encrypted_message)
             if sender == st.session_state["username"]:
-                st.chat_message("user").markdown(f"**{sender}:** {decrypted_message}")
+                st.chat_message("user").markdown(f"🟢 **{sender}:** {decrypted_message}")
             else:
-                st.chat_message("assistant").markdown(f"**{sender}:** {decrypted_message}")
+                st.chat_message("assistant").markdown(f"🔵 **{sender}:** {decrypted_message}")
 
     # Input chat message
-    user_message = st.chat_input("Type your message...")
+    user_message = st.chat_input("Type your message... 💌")
     if user_message:
         encrypted_message = encrypt_message(user_message)
         db.collection("messages").add({"username": st.session_state["username"], "message": encrypted_message})
+        st.success("📩 Message sent!")
         st.rerun()
