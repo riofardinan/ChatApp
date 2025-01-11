@@ -53,12 +53,12 @@ def decrypt_message(encrypted_message):
 
 # Pop-up for username
 if "username" not in st.session_state:
-    with st.modal("Enter your name 📝", closable=False):
-        username = st.text_input("What's your name?")
-        if username:
-            st.session_state["username"] = username
-            st.success(f"Hello, {username}! 🚀 Let's chat!")
-            st.rerun()
+    username = st.text_input("Enter your name 📝")
+    if username:
+        st.session_state["username"] = username
+        st.success(f"Hello, {username}! 🚀 Let's chat!")
+        st.rerun()
+
 else:
     # Chat Room UI
     st.title("🌟 Chat Room")
