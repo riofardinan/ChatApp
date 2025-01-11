@@ -55,7 +55,7 @@ if "username" not in st.session_state:
         st.rerun()
 
 else:
-    st.success(f"Hello, {username}! 🚀 Let's chat!")
+    st.success(f"Hello, {st.session_state['username']}! 🚀 Let's chat!")
     st.title("🌟 Chat Room")
 
     chat_messages = st.container()
