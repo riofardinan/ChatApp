@@ -70,9 +70,9 @@ else:
             formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S") if timestamp else "Unknown"
             decrypted_message = decrypt_message(encrypted_message)
             if sender == st.session_state["username"]:
-                st.chat_message("user").markdown(f"🟢 **{sender} ({formatted_time}):** {decrypted_message}")
+                st.chat_message("user").markdown(f"**{sender}:** {decrypted_message}")
             else:
-                st.chat_message("assistant").markdown(f"🔵 **{sender} ({formatted_time}):** {decrypted_message}")
+                st.chat_message("assistant").markdown(f"**{sender}:** {decrypted_message}")
 
     user_message = st.chat_input("Type your message...")
     if user_message:
